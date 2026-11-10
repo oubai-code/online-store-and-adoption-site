@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <title>PawHaven — Pet Adoption &amp; E-Commerce Web Platform</title>
+
+  <meta name="description" content="PawHaven — A modern pet adoption and e-commerce web platform connecting rescued pets with loving families and providing quality pet supplies.">
+
+  <link rel="icon" type="image/svg+xml" href="images/logo.svg">
+  <link rel="alternate icon" type="image/png" href="images/logo.png">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Supabase Official JavaScript Client Library -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="supabase-config.js" defer></script>
+
+  <script src="script.js?v=5" defer></script>
+
+</head>
+
+<body>
+
+  <!-- =========================
+
+       FIXED TOP HEADER WITH SOCIAL ICONS
+
+       ========================= -->
+
+  <header class="top-header">
+
+    <div class="header-content">
+
+      <!-- BRAND LOGO & NAME (with fallback to logo.JPG or SVG) -->
+
+      <a href="#home" class="logo-brand" aria-label="PawHaven Home">
+
+        <img src="images/logo.svg" alt="PawHaven Logo" class="brand-logo" onerror="this.onerror=null;this.src='images/logo.png'">
+
+        <div class="brand-text">
+
+          <span class="brand-name">PawHaven</span>
+
+          <span class="brand-sub">Adopt • Care • Shop</span>
+
+        </div>
+
+      </a>
+
+      <!-- MAIN NAVIGATION LINKS -->
+      <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#adoptions">Adoptions</a></li>
+          <li><a href="#shop">Shop</a></li>
+          <li><a href="#gallery">Gallery</a></li>
+          <li><a href="#donate">Donate</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+
+        <div class="mobile-nav-footer">
+          <div class="mobile-nav-socials">
+            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" class="social-icon fb" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path fill="currentColor" d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H7.5v-3H10V9.5C10 7.01 11.49 5.65 13.7 5.65c1.06 0 2.17.19 2.17.19v2.38h-1.22c-1.23 0-1.62.77-1.62 1.56V12h2.69l-.43 3h-2.26v6.8c4.56-.93 8-4.96 8-9.8z"/></svg>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-icon ig" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://wa.me/9710000000000" target="_blank" rel="noopener noreferrer" class="social-icon wa" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path fill="currentColor" d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            </a>
+          </div>
+          <a href="admin-login.html" class="mobile-nav-admin-link">Admin Portal 🔐</a>
+        </div>
+      </nav>
+
+      <!-- SOCIAL MEDIA SVG ICONS & CART BUTTON AT TOP RIGHT -->
+      <div class="header-socials">
+        <!-- Basket / Cart Button -->
+        <button type="button" id="openCartBtn" class="header-cart-btn" aria-label="Open Cart and Adoption Basket" title="View Selected Items">
+          🛒 <span class="cart-btn-label">Basket</span>
+          <span class="cart-badge-count" id="headerCartCount">0</span>
+        </button>
+
+        <!-- Facebook Icon -->
+        <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" class="social-icon fb" aria-label="Facebook">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H7.5v-3H10V9.5C10 7.01 11.49 5.65 13.7 5.65c1.06 0 2.17.19 2.17.19v2.38h-1.22c-1.23 0-1.62.77-1.62 1.56V12h2.69l-.43 3h-2.26v6.8c4.56-.93 8-4.96 8-9.8z"/></svg>
+        </a>
+
+        <!-- Instagram Icon -->
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-icon ig" aria-label="Instagram">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+
+        <!-- WhatsApp Icon -->
+        <a href="https://wa.me/9710000000000" target="_blank" rel="noopener noreferrer" class="social-icon wa" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        </a>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button type="button" id="mobileMenuToggle" class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mainNav">
+          <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Backdrop Overlay -->
+  <div class="nav-overlay" id="navOverlay" aria-hidden="true"></div>
+
+  <!-- =========================
+
+       MAIN CONTENT CONTAINER
+
+       ========================= -->
+
+  <main class="content-container">
+
+    <!-- 1. HOME SECTION (100vh - 2 LIVE SHOWCASE PICS) -->
+
+    <section id="home" class="hero-screen">
+
+      <div class="slogan-badge">
+
+        <span>✨ Rescue • Adopt • Care ✨</span>
+
+      </div>
+
+      <div class="hero-split-showcase">
+
+        <!-- Live Pic 1: Adoptions -->
+        <a href="#adoptions" class="showcase-card showcase-adoptions">
+          <div class="showcase-overlay"></div>
+          <img src="images/pet-adoption-showcase.png" alt="Adopt Animals" class="showcase-img" fetchpriority="high" decoding="async" onerror="this.onerror=null;this.src='images/logo.png'">
+          <div class="showcase-content">
+            <span class="badge pink-badge">Live Adoption 🐾</span>
+            <h3>Meet Animals Looking for Homes 🐶🐱</h3>
+          </div>
+        </a>
+
+        <!-- Live Pic 2: Pet Shop -->
+        <a href="#shop" class="showcase-card showcase-shop">
+          <div class="showcase-overlay"></div>
+          <img src="images/pet-shop-supplies.png" alt="Pet Shop Supplies" class="showcase-img" fetchpriority="high" decoding="async" onerror="this.onerror=null;this.src='images/logo.png'">
+          <div class="showcase-content">
+            <span class="badge blue-badge">Online Store 🎀</span>
+            <h3>Explore Toys, Leashes & Pet Supplies 🦴</h3>
+          </div>
+        </a>
+      </div>
+
+      <div class="scroll-indicator">
+
+        <span>Scroll down</span>
+
+        <div class="arrow">&#8595;</div>
+
+      </div>
+
+    </section>
+
+    <!-- 2. ADOPTION SECTION -->
+
+    <section id="adoptions" class="scroll-section">
+
+      <div class="section-header-text">
+
+        <h2>Adoptable Animals 🐾</h2>
+
+        <p>Find your new furry best friend ready to join your family. Browse our rescued cats and dogs.</p>
+
+      </div>
+
+      <!-- FILTER CONTROLS: SEARCH, SPECIES, GENDER, STATUS -->
+
+      <div class="modern-filter-bar">
+
+        <div class="search-wrapper">
+
+          <svg class="search-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/></svg>
+
+          <input type="search" id="searchInput" placeholder="Search by name, personality..." aria-label="Search animals">
+
+        </div>
+
+        <div class="select-group">
+
+          <!-- Species filter: All, Dogs, Cats -->
+
+          <div class="select-wrapper">
+
+            <select id="speciesFilter" aria-label="Filter by species">
+
+              <option value="all">🐾 All Animals</option>
+
+              <option value="dog">🐶 Dogs only</option>
+
+              <option value="cat">🐱 Cats only</option>
+
+            </select>
+
+          </div>
+
+          <!-- Gender filter: All, Male, Female -->
+
+          <div class="select-wrapper">
+
+            <select id="genderFilter" aria-label="Filter by gender">
+
+              <option value="all">✨ All Genders</option>
+
+              <option value="male">♂ Male</option>
+
+              <option value="female">♀ Female</option>
+
+            </select>
+
+          </div>
+
+          <!-- Availability status filter -->
+
+          <div class="select-wrapper">
+
+            <select id="statusFilter" aria-label="Filter by status">
+
+              <option value="all">💖 All Status</option>
+
+              <option value="available" selected>🌸 Available</option>
+
+              <option value="adopted">🏡 Adopted</option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- 3-COL ADOPTION GRID -->
+
+      <div class="dogs-grid-3col" id="dogsGrid"></div>
+
+    </section>
+
+    <!-- 3. PET SHOP SECTION -->
+
+    <section id="shop" class="scroll-section">
+
+      <div class="section-header-text">
+
+        <h2>Pet Shop 🛍️</h2>
+
+        <p>Premium collars, leashes, toys, and supplies. All proceeds directly support rescue animal care.</p>
+
+      </div>
+
+      <!-- 3-COL PRODUCT GRID -->
+
+      <div class="products-grid-3col" id="productsGrid"></div>
+
+    </section>
+
+    <!-- 4. GALLERY (ROTATING FEATURED VIEWPORT + THUMBNAILS + ALBUMS COMPATIBILITY) -->
+
+    <section id="gallery" class="scroll-section">
+
+      <div class="section-header-text">
+
+        <h2>Gallery ✨</h2>
+
+        <p>Moments captured during rescue missions, sterilizations, and successful adoptions.</p>
+
+      </div>
+
+      <!-- Interactive Rotating Gallery (Synced thumbnails + 4s Auto-Rotation) -->
+
+      <div class="gallery-interactive-wrapper">
+
+        <!-- Main Featured Live Photo Display -->
+
+        <div class="featured-live-photo">
+          <img id="liveGalleryImg" src="images/pet-adoption-showcase.png" alt="Rescued Pup Finding Hope" onerror="this.onerror=null;this.src='images/logo.png'">
+          <div class="gallery-caption-overlay" id="liveGalleryCaption">Rescued Pup Finding Hope</div>
+        </div>
+
+        <!-- Thumbnail Grid -->
+        <div class="gallery-thumbnails-grid" id="galleryThumbnailsGrid">
+          <div class="thumb-item active" onclick="switchGalleryImg('images/pet-adoption-showcase.png', 'Rescued Pup Finding Hope', this)">
+            <img src="images/pet-adoption-showcase.png" alt="Rescued Pup" onerror="this.onerror=null;this.src='images/logo.png'">
+          </div>
+          <div class="thumb-item" onclick="switchGalleryImg('images/pet-shop-supplies.png', 'Pet Shop & Community Support', this)">
+            <img src="images/pet-shop-supplies.png" alt="Pet Shop Support" onerror="this.onerror=null;this.src='images/logo.png'">
+          </div>
+          <div class="thumb-item" onclick="switchGalleryImg('images/logo.svg', 'Our Rescue & Care Mission', this)">
+            <img src="images/logo.svg" alt="PawHaven Mission" onerror="this.onerror=null;this.src='images/logo.png'">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Optional Albums Display (Dynamically populated if albums are configured) -->
+
+      <div class="albums-display-wrapper" id="albumsContainer" style="display: none; margin-top: 36px;"></div>
+
+    </section>
+
+    <!-- 5. DONATION SECTION -->
+
+    <section id="donate" class="scroll-section">
+
+      <h2>Donate & Support 💜</h2>
+
+      <p>Your support directly funds essential medical treatments, veterinary care, nutritious food, and safe shelter for rescue pets awaiting adoption.</p>
+
+      <div class="donate-box">
+
+        <p><strong>Support & Inquiries:</strong> +9710000000000</p>
+
+        <p>Contact our team directly to learn about sponsorship opportunities, supplies donation, or volunteer programs.</p>
+
+        <a class="btn-primary pink-btn" href="https://wa.me/9710000000000" target="_blank" rel="noopener noreferrer" style="margin-top: 10px;">Support via WhatsApp</a>
+
+      </div>
+
+    </section>
+
+    <!-- 6. ABOUT US SECTION -->
+
+    <section id="about" class="scroll-section full-page-section">
+
+      <div class="section-card-wrapper">
+
+        <span class="section-tag">Who We Are</span>
+
+        <h2>About PawHaven 🐾</h2>
+
+        <div class="about-content">
+
+          <p class="lead-text">
+            PawHaven is an independent web platform connecting rescue animals with loving forever families while offering quality pet supplies that give back to the animal welfare community.
+          </p>
+
+          <p>
+            We work alongside community fosters and rescue volunteers to provide medical care, rehabilitation, and compassionate adoption placement. Every purchase in our online shop directly aids in providing vaccines, nutrition, and comfort for rescued pets.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- 7. CONTACT SECTION -->
+
+    <section id="contact" class="scroll-section">
+
+      <h2>Contact Us 💌</h2>
+
+      <p>Have questions about animal adoption, pet shop orders, or volunteering?</p>
+
+      <p><strong>Phone / Support:</strong> +9710000000000</p>
+
+      <p><strong>Email:</strong> <a href="mailto:abdelrahman.tnh@gmail.com" style="color: inherit; text-decoration: underline;">abdelrahman.tnh@gmail.com</a></p>
+
+      <p><strong>Location:</strong> UAE, Dubai</p>
+
+      <div class="contact-actions" style="margin-top: 15px;">
+
+        <a class="btn-primary" href="https://wa.me/9710000000000" target="_blank" rel="noopener noreferrer">Message on WhatsApp</a>
+
+      </div>
+
+    </section>
+
+  <!-- =========================
+
+       CART & ADOPTION REQUEST BASKET DRAWER (SHARED CART)
+
+       ========================= -->
+
+  <div class="cart-drawer-overlay" id="cartDrawerOverlay" aria-hidden="true">
+
+    <aside class="cart-drawer" role="dialog" aria-modal="true" aria-label="Cart and Request Basket">
+
+      <!-- Drawer Header -->
+
+      <div class="cart-drawer-header">
+
+        <h2 class="cart-drawer-title">
+
+          <span>🛒</span> Request Basket
+
+        </h2>
+
+        <button type="button" class="cart-drawer-close" id="closeCartBtn" aria-label="Close Basket">&times;</button>
+
+      </div>
+
+      <!-- Drawer Tabs: Shop Items vs Adoption Animals -->
+
+      <div class="cart-drawer-tabs" id="drawerTabsNav">
+
+        <button type="button" class="cart-drawer-tab active" data-tab="shopTab" id="tabBtnShop">
+
+          🛍️ Shop Items <span class="cart-tab-pill" id="cartShopCount">0</span>
+
+        </button>
+
+        <button type="button" class="cart-drawer-tab" data-tab="adoptionTab" id="tabBtnAdoption">
+
+          🐾 Adoption Basket <span class="cart-tab-pill" id="cartAdoptionCount">0</span>
+
+        </button>
+
+      </div>
+
+      <!-- Drawer Body -->
+
+      <div class="cart-drawer-body">
+
+        <!-- =======================
+
+             VIEW 1: ITEMS BASKET VIEW
+
+             ======================= -->
+
+        <div id="cartBasketView" style="display: flex; flex-direction: column; flex: 1; gap: 14px;">
+
+          <!-- Pane A: Shop Products -->
+
+          <div class="cart-pane active" id="shopTab">
+
+            <div id="cartShopItemsList" class="cart-items-list">
+
+              <!-- Populated by JS -->
+
+            </div>
+
+            <div id="cartShopEmpty" class="cart-empty-box" style="display: none;">
+
+              <span class="cart-empty-icon">🛍️</span>
+
+              <span class="cart-empty-title">Your Pet Shop Cart is Empty</span>
+
+              <p class="cart-empty-desc">Explore our toys, leads, collars and supplies. Every purchase helps animals in need!</p>
+
+              <a href="#shop" class="btn-primary pink-btn" style="text-decoration: none; padding: 8px 18px; font-size: 13px; margin-top: 8px;" id="browseShopBtn">Browse Pet Shop</a>
+
+            </div>
+
+          </div>
+
+          <!-- Pane B: Adoption Animals -->
+
+          <div class="cart-pane" id="adoptionTab">
+
+            <div class="adoption-notice-box">
+
+              🌸 <strong>Adoption Process:</strong> Select one or more rescue animals to apply for adoption together. Adoption is a loving matching process — there are no fees or financial payments.
+
+            </div>
+
+            <div id="cartAdoptionItemsList" class="cart-items-list">
+
+              <!-- Populated by JS -->
+
+            </div>
+
+            <div id="cartAdoptionEmpty" class="cart-empty-box" style="display: none;">
+
+              <span class="cart-empty-icon">🐾</span>
+
+              <span class="cart-empty-title">Your Adoption Basket is Empty</span>
+
+              <p class="cart-empty-desc">You haven't selected any animals for adoption yet. Find your next furry companion!</p>
+
+              <a href="#adoptions" class="btn-primary pink-btn" style="text-decoration: none; padding: 8px 18px; font-size: 13px; margin-top: 8px;" id="browseAdoptionsBtn">Meet Adoptable Pets</a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- =======================
+
+             VIEW 2: CHECKOUT & VISITOR DETAILS FORM
+
+             ======================= -->
+
+        <div id="cartCheckoutView" class="checkout-view">
+
+          <div class="checkout-review-card">
+
+            <div class="checkout-review-title" id="checkoutReviewTitle">Review Your Selections</div>
+
+            <div id="checkoutReviewItems" class="checkout-review-items"></div>
+
+            <div id="checkoutReviewTotalRow" class="checkout-review-item-row" style="font-weight: 800; color: var(--vibrant-pink); margin-top: 6px; border-top: 1px dashed var(--border-line); padding-top: 6px;"></div>
+
+          </div>
+
+          <form id="requestSubmissionForm">
+
+            <input type="hidden" id="checkoutRequestType" value="shop">
+
+            <div class="checkout-form-group">
+
+              <label for="custName">Full Name *</label>
+
+              <input type="text" id="custName" placeholder="e.g. Alex Morgan" required autocomplete="name">
+
+            </div>
+
+            <div class="checkout-form-group">
+
+              <label for="custPhone">Phone Number *</label>
+
+              <input type="tel" id="custPhone" placeholder="e.g. +971 50 123 4567" required autocomplete="tel">
+
+            </div>
+
+            <div class="checkout-form-group">
+
+              <label for="custAddress" id="custAddressLabel">Delivery / Home Address *</label>
+
+              <input type="text" id="custAddress" placeholder="123 Rescue Way, Apt 4B" required autocomplete="street-address">
+
+            </div>
+
+            <div class="checkout-form-group">
+
+              <label for="custCity">City, State &amp; ZIP *</label>
+
+              <input type="text" id="custCity" placeholder="e.g. Dubai, UAE" required autocomplete="address-level2">
+
+            </div>
+
+            <div class="checkout-form-group">
+
+              <label for="custNotes">Additional Information / Notes (Optional)</label>
+
+              <textarea id="custNotes" rows="2" placeholder="Delivery time preferences, special requests, questions (optional)..."></textarea>
+
+            </div>
+
+            <div class="checkout-step-actions">
+
+              <button type="button" class="btn-checkout-back" id="backToBasketBtn">← Back</button>
+
+              <button type="submit" class="btn-checkout-submit" id="submitRequestBtn">
+
+                Confirm & Submit 🚀
+
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+        <!-- =======================
+
+             VIEW 3: CONFIRMATION & NOTIFICATION SCREEN
+
+             ======================= -->
+
+        <div id="cartConfirmationView" class="confirmation-view">
+
+          <div class="confirmation-badge-warning" id="confirmationBadgeIcon">⚠️</div>
+
+          <h3 style="font-size: 19px; font-weight: 900; color: #B45309;" id="confirmationTitle">One Last Step! Your Order Request Is Not Yet Submitted</h3>
+
+          <p style="font-size: 13.5px; color: var(--text-dark); line-height: 1.5;" id="confirmationMsg">
+            Please choose one of the contact options below to send your order details to us. <strong>We will only receive and process your order after you complete this step.</strong>
+          </p>
+
+          <div class="confirmation-ref-code" id="confirmationRefCode">ORD-20261012-0000</div>
+
+          <div class="confirmation-notice-box">
+            <strong style="color: #92400E; display: block; margin-bottom: 4px;">⚠️ Action Required to Complete Your Order:</strong>
+            <ol style="margin-left: 18px; margin-top: 4px; font-size: 12.5px; line-height: 1.45;">
+              <li>Your order request is prepared but <strong>not yet submitted</strong> to our team.</li>
+              <li>Click the button below to send your order details directly via WhatsApp, Facebook Messenger, or Instagram DM.</li>
+              <li>Your order will only be treated as received and confirmed after that final step.</li>
+            </ol>
+          </div>
+
+          <a href="#" target="_blank" rel="noopener noreferrer" id="confirmationWhatsAppBtn" class="btn-whatsapp-dispatch">
+            <span>💬 Send via WhatsApp (Auto-filled)</span>
+          </a>
+
+          <div style="width: 100%; margin-top: 6px;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">Or send details via social media:</span>
+            <div class="contact-options-row">
+              <a href="https://m.me/100064693869194" target="_blank" rel="noopener noreferrer" class="btn-contact-alt" id="confirmationFbBtn">
+                📘 Facebook Messenger
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="btn-contact-alt" id="confirmationIgBtn">
+                📸 Instagram DM
+              </a>
+            </div>
+            <button type="button" class="btn-contact-alt" id="copyOrderDetailsBtn" style="width: 100%; margin-top: 8px; justify-content: center; background: #fff; border: 1.5px solid var(--border-line); cursor: pointer;">
+              📋 Copy Complete Order Details
+            </button>
+            <div id="copyNotificationMsg" style="display: none; color: #2E7D32; font-size: 12px; font-weight: 700; text-align: center; margin-top: 6px;">
+              ✅ Order details copied to clipboard! Paste directly into your chat.
+            </div>
+          </div>
+
+          <button type="button" class="btn-checkout-back" id="closeConfirmationBtn" style="width: 100%; margin-top: 10px;">
+            Close Window
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- Drawer Footer (Visible during Basket View) -->
+
+      <div class="cart-drawer-footer" id="cartDrawerFooter">
+
+        <div id="shopFooterSummary" style="display: flex; flex-direction: column; gap: 8px;">
+
+          <div class="cart-totals-summary">
+
+            <span>Subtotal:</span>
+
+            <span class="cart-totals-amount" id="cartSubtotalAmount">$0.00</span>
+
+          </div>
+
+          <p class="cart-fund-note">💖 100% of store proceeds support rescue pet care and medical treatments.</p>
+
+          <button type="button" class="btn-proceed-checkout" id="proceedShopCheckoutBtn">
+
+            Proceed to Shop Checkout 🛍️
+
+          </button>
+
+        </div>
+
+        <div id="adoptionFooterSummary" style="display: none; flex-direction: column; gap: 8px;">
+
+          <p class="cart-fund-note" style="color: var(--main-purple); font-weight: 700;">🐾 Ready to give these rescues a forever home?</p>
+
+          <button type="button" class="btn-proceed-adoption" id="proceedAdoptionCheckoutBtn">
+
+            Proceed to Adoption Application 🐾
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- FLOATING QUICK ACCESS CART PILL -->
+
+  <button type="button" id="floatingCartBtn" class="floating-cart-pill" aria-label="Open Request Basket" style="display: none;">
+
+    <span>🛒</span> Basket (<span id="floatingCartCount">0</span>)
+
+  </button>
+
+  <!-- =========================
+
+       LIGHTBOX / FULL MEDIA VIEWER MODAL (IMAGES + VIDEOS)
+
+       ========================= -->
+
+  <div class="lightbox-overlay" id="galleryLightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Gallery Media Viewer">
+
+    <div class="lightbox-dialog">
+
+      <button type="button" class="lightbox-close" id="closeLightboxBtn" aria-label="Close Lightbox">&times;</button>
+
+      <div class="lightbox-content">
+
+        <button type="button" class="lightbox-arrow lightbox-prev" id="lightboxPrevBtn" aria-label="Previous Media">&#10094;</button>
+
+        <div class="lightbox-media-wrapper">
+
+          <img id="lightboxImg" src="" alt="" style="display: none;">
+
+          <video id="lightboxVideo" src="" controls playsinline preload="auto" style="display: none;">
+
+            Your browser does not support video playback.
+
+          </video>
+
+        </div>
+
+        <button type="button" class="lightbox-arrow lightbox-next" id="lightboxNextBtn" aria-label="Next Media">&#10095;</button>
+
+      </div>
+
+      <div class="lightbox-footer">
+
+        <div class="lightbox-caption" id="lightboxCaption"></div>
+
+        <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
+
+      </div>
+
+      <div class="lightbox-thumbs-strip" id="lightboxThumbsStrip"></div>
+
+    </div>
+
+  </div>
+
+  <!-- =========================
+
+       SUPER THIN FOOTER
+
+       ========================= -->
+
+  <footer class="site-footer">
+
+    <p>© <span id="copyright-year"></span> PawHaven. All rights reserved.</p>
+
+  </footer>
+
+</body>
+
+</html>
