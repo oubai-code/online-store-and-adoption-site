@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Admin Dashboard — PawHaven</title>
+  <link rel="icon" type="image/svg+xml" href="images/logo.svg">
+  <link rel="alternate icon" type="image/png" href="images/logo.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin.css">
+  <!-- Supabase Official JavaScript Client Library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="admin.js" defer></script>
+</head>
+<body class="admin-body">
+
+  <!-- ==================================================
+       AUTH GATEKEEPER / LOADING STATE
+       ================================================== -->
+  <div id="authLoadingGate" class="auth-loading-screen">
+    <div class="auth-loading-card">
+      <div class="spinner"></div>
+      <h3>Verifying Admin Access</h3>
+      <p>Connecting to administrative console...</p>
+    </div>
+  </div>
+
+  <!-- ==================================================
+       FIXED ADMIN HEADER
+       ================================================== -->
+  <header class="admin-header">
+    <div class="admin-header-left">
+      <a href="index.html" class="admin-logo-link" title="Return to Public Website">
+        <img src="images/logo.svg" alt="PawHaven Logo" class="admin-logo" onerror="this.onerror=null;this.src='images/logo.png'">
+        <span class="admin-title">PawHaven Admin</span>
+      </a>
+    </div>
+
+    <div class="admin-header-right">
+      <button id="manageAdminsBtn" class="btn-admin secondary-btn btn-small" type="button" title="Manage authorized administrator accounts">
+        Admins 👥
+      </button>
+      <a href="index.html" class="btn-admin secondary-btn btn-small" target="_blank" rel="noopener">
+        View Live Site ↗
+      </a>
+      <span class="admin-email-badge" id="adminEmailBadge">Loading...</span>
+      <button id="logoutBtn" class="btn-admin danger-btn btn-small">
+        Sign Out
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================================================
+       MAIN ADMIN DASHBOARD
+       ================================================== -->
+  <main class="admin-container" id="adminMainContent" style="display: none;">
+
+    <!-- TAB NAVIGATION (5 DISTINCT SECTIONS) -->
+    <div class="admin-tabs" role="tablist">
+      <button class="admin-tab active" data-tab="tab-animals" role="tab" aria-selected="true">
+        🐶 Adoptable Animals (<span id="totalAnimalsCount">0</span>)
+      </button>
+      <button class="admin-tab" data-tab="tab-products" role="tab" aria-selected="false">
+        🛍️ Pet Shop (<span id="totalProductsCount">0</span>)
+      </button>
+      <button class="admin-tab" data-tab="tab-orders" role="tab" aria-selected="false">
+        🛒 Orders (<span id="totalOrdersCount">0</span>)
+      </button>
+      <button class="admin-tab" data-tab="tab-adoptions" role="tab" aria-selected="false">
+        📋 Adoption Requests (<span id="totalAdoptionsCount">0</span>)
+      </button>
+      <button class="admin-tab" data-tab="tab-gallery" role="tab" aria-selected="false">
+        ✨ Featured Gallery (<span id="totalGalleryCount">0</span>)
+      </button>
+    </div>
+
+
+    <!-- ==================================================
+         TAB 1: ANIMALS MANAGEMENT (TYPE, GENDER, AGE, REORDERING)
+         ================================================== -->
+    <div id="tab-animals" class="tab-pane active" role="tabpanel">
+      <div class="admin-dashboard-grid">
+
+        <!-- ADD ANIMAL FORM -->
+        <section class="admin-panel-card">
+          <h2 class="admin-panel-title">Add New Animal Listing 🐾</h2>
+          
+          <form id="addAnimalForm">
+            <div class="form-group">
+              <label for="animalName">Animal Name *</label>
+              <input
+                type="text"
+                id="animalName"
+                class="form-control"
+                placeholder="e.g. Canela, Luna, Milo"
+                required
+              >
+            </div>
+
+            <!-- ANIMAL TYPE: DOG OR CAT -->
+            <div class="form-group">
+              <label for="animalType">Animal Type *</label>
+              <select id="animalType" class="form-control" required>
+                <option value="dog">🐶 Dog</option>
+                <option value="cat">🐱 Cat</option>
+              </select>
+            </div>
+
+            <!-- GENDER: MALE OR FEMALE -->
+            <div class="form-group">
+              <label for="animalGender">Gender *</label>
+              <select id="animalGender" class="form-control" required>
+                <option value="female">♀ Female</option>
+                <option value="male">♂ Male</option>
+              </select>
+            </div>
+
+            <!-- AGE: NUMERICAL VALUE + UNIT -->
+            <div class="form-row-2col">
+              <div class="form-group">
+                <label for="animalAgeValue">Age *</label>
+                <input
+                  type="number"
+                  id="animalAgeValue"
+                  class="form-control"
+                  min="1"
+                  max="30"
+                  step="1"
+                  value="1"
+                  required
+                >
+              </div>
+              <div class="form-group">
+                <label for="animalAgeUnit">Unit *</label>
+                <select id="animalAgeUnit" class="form-control" required>
+                  <option value="years">Years</option>
+                  <option value="months">Months</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="animalDescription">Description / Personality *</label>
+              <textarea
+                id="animalDescription"
+                class="form-control"
+                placeholder="Share personality traits, health status, sterilization info, and rescue story..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="animalPhoto">Animal Photo *</label>
+              <input
+                type="file"
+                id="animalPhoto"
+                class="form-control"
+                accept="image/*"
+                required
+              >
+              <div class="image-preview-wrapper" id="addPhotoWrapper">
+                <span class="image-preview-placeholder" id="addPhotoPlaceholder">Select a photo to preview</span>
+                <img id="addPhotoPreview" class="image-preview-img" alt="Animal Preview">
+              </div>
+            </div>
+
+            <button type="submit" id="submitAnimalBtn" class="btn-admin">
+              Add Animal Listing
+            </button>
+          </form>
+        </section>
+
+        <!-- MANAGE ANIMALS LIST WITH REORDERING -->
+        <section class="admin-panel-card">
+          <div class="admin-panel-title">
+            <span>Manage Animal Listings 📋</span>
+            <button id="refreshAnimalsBtn" class="btn-admin secondary-btn btn-small">
+              ↻ Refresh
+            </button>
+          </div>
+
+          <div class="admin-toolbar">
+            <div class="admin-search-box">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/></svg>
+              <input type="search" id="adminSearchInput" placeholder="Filter listings by name or description...">
+            </div>
+
+            <select id="adminSpeciesFilter" class="form-control" style="width: auto; min-width: 140px;">
+              <option value="all">🐾 All Types</option>
+              <option value="dog">🐶 Dogs only</option>
+              <option value="cat">🐱 Cats only</option>
+            </select>
+
+            <select id="adminGenderFilter" class="form-control" style="width: auto; min-width: 140px;">
+              <option value="all">✨ All Genders</option>
+              <option value="female">♀ Female only</option>
+              <option value="male">♂ Male only</option>
+            </select>
+          </div>
+
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+            💡 <strong>Manual Order:</strong> Drag cards up/down or click ⬆/⬇ to set the order animals appear on the website.
+          </p>
+
+          <div id="adminAnimalsList" class="admin-animals-grid">
+            <div class="loading-empty-state">
+              <div class="spinner"></div>
+              <p>Loading animal listings...</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- ==================================================
+         TAB 2: PRODUCTS MANAGEMENT (ONLINE SHOP)
+         ================================================== -->
+    <div id="tab-products" class="tab-pane" role="tabpanel">
+      <div class="admin-dashboard-grid">
+
+        <!-- ADD PRODUCT FORM -->
+        <section class="admin-panel-card">
+          <h2 class="admin-panel-title">Add Store Product 🛍️</h2>
+          
+          <form id="addProductForm">
+            <div class="form-group">
+              <label for="productName">Product Name *</label>
+              <input
+                type="text"
+                id="productName"
+                class="form-control"
+                placeholder="e.g. Heavy Duty Lead & Collar Set"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="productPrice">Price Display *</label>
+              <input
+                type="text"
+                id="productPrice"
+                class="form-control"
+                placeholder="e.g. $24.99"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="productStock">Available Stock Quantity (Units)</label>
+              <input
+                type="number"
+                id="productStock"
+                class="form-control"
+                min="0"
+                step="1"
+                placeholder="e.g. 50 (leave empty for untracked)"
+              >
+              <small style="color: var(--text-muted); font-size: 11px;">
+                Enter available units (e.g. 50). If 1-4 units left, low-stock warning appears automatically on site. If 0, marked Out of Stock.
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label for="productPhoto">Product Photo *</label>
+              <input
+                type="file"
+                id="productPhoto"
+                class="form-control"
+                accept="image/*"
+                required
+              >
+              <div class="image-preview-wrapper" id="addProductPhotoWrapper">
+                <span class="image-preview-placeholder" id="addProductPhotoPlaceholder">Select a photo to preview</span>
+                <img id="addProductPhotoPreview" class="image-preview-img" alt="Product Preview">
+              </div>
+            </div>
+
+            <button type="submit" id="submitProductBtn" class="btn-admin">
+              Add Product to Store
+            </button>
+          </form>
+        </section>
+
+        <!-- MANAGE PRODUCTS LIST WITH REORDERING -->
+        <section class="admin-panel-card">
+          <div class="admin-panel-title">
+            <span>Online Store Products 🎀</span>
+            <button id="refreshProductsBtn" class="btn-admin secondary-btn btn-small">
+              ↻ Refresh
+            </button>
+          </div>
+
+          <div class="admin-toolbar">
+            <div class="admin-search-box">
+              <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/></svg>
+              <input type="search" id="adminProductSearchInput" placeholder="Filter products by name...">
+            </div>
+          </div>
+
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+            💡 <strong>Manual Order:</strong> Drag cards up/down or click ⬆/⬇ to reorder products.
+          </p>
+
+          <div id="adminProductsList" class="admin-animals-grid">
+            <div class="loading-empty-state">
+              <div class="spinner"></div>
+              <p>Loading products...</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- ==================================================
+         TAB 3: CUSTOMER SHOP ORDERS
+         ================================================== -->
+    <div id="tab-orders" class="tab-pane" role="tabpanel">
+      <section class="admin-panel-card">
+        <div class="admin-panel-title">
+          <span>Customer Shop Orders 🛒 (<span id="ordersCounterBadgeInner">0</span>)</span>
+          <button id="refreshOrdersBtn" class="btn-admin secondary-btn btn-small">
+            ↻ Refresh Orders
+          </button>
+        </div>
+
+        <div class="admin-toolbar">
+          <div class="admin-search-box">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/></svg>
+            <input type="text" id="orderSearchInput" placeholder="Search orders by customer, ref #, or phone...">
+          </div>
+          <select id="orderStatusFilter" class="form-control" style="width: auto; min-width: 170px;">
+            <option value="all">All Statuses</option>
+            <option value="pending">⏳ Pending</option>
+            <option value="confirmed">✅ Confirmed</option>
+            <option value="delivered">🚚 Delivered</option>
+            <option value="cancelled">❌ Cancelled</option>
+          </select>
+        </div>
+
+        <div id="adminOrdersList" class="admin-orders-grid">
+          <div class="loading-empty-state">
+            <div class="spinner"></div>
+            <p>Loading shop orders...</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================================================
+         TAB 4: ADOPTION APPLICATIONS
+         ================================================== -->
+    <div id="tab-adoptions" class="tab-pane" role="tabpanel">
+      <section class="admin-panel-card">
+        <div class="admin-panel-title">
+          <span>Adoption Applications 📋 (<span id="adoptionsCounterBadgeInner">0</span>)</span>
+          <button id="refreshAdoptionsBtn" class="btn-admin secondary-btn btn-small">
+            ↻ Refresh Requests
+          </button>
+        </div>
+
+        <div class="admin-toolbar">
+          <div class="admin-search-box">
+            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 14z"/></svg>
+            <input type="text" id="adoptionSearchInput" placeholder="Search applications by applicant, ref #, or phone...">
+          </div>
+          <select id="adoptionStatusFilter" class="form-control" style="width: auto; min-width: 170px;">
+            <option value="all">All Statuses</option>
+            <option value="pending">⏳ Pending</option>
+            <option value="reviewing">🔍 Under Review</option>
+            <option value="approved">🎉 Approved</option>
+            <option value="rejected">❌ Rejected</option>
+          </select>
+        </div>
+
+        <div id="adminAdoptionsList" class="admin-adoptions-grid">
+          <div class="loading-empty-state">
+            <div class="spinner"></div>
+            <p>Loading adoption applications...</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ==================================================
+         TAB 5: FEATURED GALLERY PHOTOS (public.gallery)
+
+         ================================================== -->
+    <div id="tab-gallery" class="tab-pane" role="tabpanel">
+      <div class="admin-dashboard-grid">
+
+        <!-- ADD GALLERY PHOTO FORM -->
+        <section class="admin-panel-card">
+          <h2 class="admin-panel-title">Add Featured Gallery Photo ✨</h2>
+          <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+            Photos added here appear directly in the rotating carousel on the public website.
+          </p>
+          
+          <form id="addGalleryForm">
+            <div class="form-group">
+              <label for="galleryTitle">Photo Caption / Title *</label>
+              <input
+                type="text"
+                id="galleryTitle"
+                class="form-control"
+                placeholder="e.g. Rescued Pup Finding Hope"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="galleryPhoto">Gallery Photo *</label>
+              <input
+                type="file"
+                id="galleryPhoto"
+                class="form-control"
+                accept="image/*"
+                required
+              >
+              <div class="image-preview-wrapper" id="addGalleryPhotoWrapper">
+                <span class="image-preview-placeholder" id="addGalleryPhotoPlaceholder">Select a photo to preview</span>
+                <img id="addGalleryPhotoPreview" class="image-preview-img" alt="Gallery Photo Preview">
+              </div>
+            </div>
+
+            <button type="submit" id="submitGalleryBtn" class="btn-admin">
+              Add Photo to Gallery
+            </button>
+          </form>
+        </section>
+
+        <!-- MANAGE GALLERY PHOTOS WITH MANUAL REORDERING -->
+        <section class="admin-panel-card">
+          <div class="admin-panel-title">
+            <span>Featured Gallery Photos 📸</span>
+            <button id="refreshGalleryBtn" class="btn-admin secondary-btn btn-small">
+              ↻ Refresh
+            </button>
+          </div>
+
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+            💡 <strong>Manual Order:</strong> Drag cards up/down or click ⬆/⬇ to reorder gallery photos. Changes reflect immediately on the live website.
+          </p>
+
+          <div id="adminGalleryList" class="admin-animals-grid">
+            <div class="loading-empty-state">
+              <div class="spinner"></div>
+              <p>Loading gallery photos...</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==================================================
+       EDIT ANIMAL MODAL
+       ================================================== -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Edit Animal Listing ✏️</h3>
+        <button type="button" class="modal-close" id="closeEditModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form id="editAnimalForm">
+        <input type="hidden" id="editAnimalId">
+        <input type="hidden" id="editCurrentImageUrl">
+
+        <div class="form-group">
+          <label for="editAnimalName">Animal Name *</label>
+          <input type="text" id="editAnimalName" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label for="editAnimalType">Animal Type *</label>
+          <select id="editAnimalType" class="form-control" required>
+            <option value="dog">🐶 Dog</option>
+            <option value="cat">🐱 Cat</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="editAnimalGender">Gender *</label>
+          <select id="editAnimalGender" class="form-control" required>
+            <option value="female">♀ Female</option>
+            <option value="male">♂ Male</option>
+          </select>
+        </div>
+
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label for="editAnimalAgeValue">Age *</label>
+            <input type="number" id="editAnimalAgeValue" class="form-control" min="1" max="30" step="1" required>
+          </div>
+          <div class="form-group">
+            <label for="editAnimalAgeUnit">Unit *</label>
+            <select id="editAnimalAgeUnit" class="form-control" required>
+              <option value="years">Years</option>
+              <option value="months">Months</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editAnimalStatus">Status *</label>
+          <select id="editAnimalStatus" class="form-control" required>
+            <option value="available">🌸 Available for Adoption</option>
+            <option value="adopted">🏡 Adopted</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="editAnimalDescription">Description *</label>
+          <textarea id="editAnimalDescription" class="form-control" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Current Photo</label>
+          <div class="image-preview-wrapper" style="min-height: 120px;">
+            <img id="editCurrentPhotoPreview" class="image-preview-img" style="display: block;" alt="Current photo">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editAnimalPhoto">Replace Photo (Optional)</label>
+          <input type="file" id="editAnimalPhoto" class="form-control" accept="image/*">
+          <small style="color: var(--text-muted); font-size: 11px;">Leave empty to keep the existing photo.</small>
+          <div class="image-preview-wrapper" id="editNewPhotoWrapper" style="display: none; margin-top: 8px;">
+            <img id="editNewPhotoPreview" class="image-preview-img" alt="New Photo Preview">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-admin secondary-btn" id="cancelEditBtn">Cancel</button>
+          <button type="submit" class="btn-admin" id="saveEditBtn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================================================
+       EDIT PRODUCT MODAL
+       ================================================== -->
+  <div class="modal-overlay" id="editProductModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Edit Store Product ✏️</h3>
+        <button type="button" class="modal-close" id="closeEditProductModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form id="editProductForm">
+        <input type="hidden" id="editProductId">
+        <input type="hidden" id="editProductCurrentImageUrl">
+
+        <div class="form-group">
+          <label for="editProductName">Product Name *</label>
+          <input type="text" id="editProductName" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label for="editProductPrice">Price Display *</label>
+          <input type="text" id="editProductPrice" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label for="editProductStock">Available Stock Quantity (Units)</label>
+          <input type="number" id="editProductStock" class="form-control" min="0" step="1" placeholder="e.g. 50">
+          <small style="color: var(--text-muted); font-size: 11px;">
+            Set current stock units. Values 1-4 trigger automatic low-stock notice on website. 0 marks as Out of Stock. Leave empty for untracked.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Current Photo</label>
+          <div class="image-preview-wrapper" style="min-height: 120px;">
+            <img id="editProductCurrentPhotoPreview" class="image-preview-img" style="display: block;" alt="Current photo">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editProductPhoto">Replace Photo (Optional)</label>
+          <input type="file" id="editProductPhoto" class="form-control" accept="image/*">
+          <small style="color: var(--text-muted); font-size: 11px;">Leave empty to keep current photo.</small>
+          <div class="image-preview-wrapper" id="editProductNewPhotoWrapper" style="display: none; margin-top: 8px;">
+            <img id="editProductNewPhotoPreview" class="image-preview-img" alt="New Photo Preview">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-admin secondary-btn" id="cancelEditProductBtn">Cancel</button>
+          <button type="submit" class="btn-admin" id="saveEditProductBtn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================================================
+       MANAGE AUTHORIZED ADMINS MODAL
+       ================================================== -->
+  <div class="modal-overlay" id="manageAdminsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Authorized Administrators 🛡️</h3>
+        <button type="button" class="modal-close" id="closeManageAdminsModalBtn" aria-label="Close modal">&times;</button>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+        Only accounts listed below have permission to access this administrative portal and make changes.
+      </p>
+
+      <div id="adminUsersList" style="max-height: 180px; overflow-y: auto; margin-bottom: 20px; border: 1.5px solid var(--border-line); border-radius: 12px; padding: 10px; background: var(--soft-lavender);">
+        <div class="loading-empty-state"><div class="spinner"></div><p>Loading admins...</p></div>
+      </div>
+
+      <div style="border-top: 1.5px solid var(--border-line); padding-top: 16px;">
+        <h4 style="font-size: 14px; color: var(--main-purple); margin-bottom: 10px;">Authorize Administrator Account</h4>
+        <form id="addAdminUserForm">
+          <div class="form-group">
+            <label for="newAdminEmail">Admin Email *</label>
+            <input type="email" id="newAdminEmail" class="form-control" placeholder="admin@pawhaven.example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="newAdminUserId">User UUID (From Supabase Auth) *</label>
+            <input type="text" id="newAdminUserId" class="form-control" placeholder="e.g. a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" required>
+            <small style="color: var(--text-muted); font-size: 11px;">The user's Auth UUID in your Supabase project.</small>
+          </div>
+          <button type="submit" id="addAdminUserBtn" class="btn-admin">
+            Authorize Administrator
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================================================
+       SHARED CONFIRM DELETE MODAL
+       ================================================== -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal-card modal-small">
+      <div class="modal-header">
+        <h3 style="color: #c62828;">Confirm Deletion ⚠️</h3>
+      </div>
+      <p style="font-size: 14px; margin: 15px 0;">
+        Are you sure you want to delete <strong id="deleteItemName">this item</strong>? This action cannot be undone.
+      </p>
+      <input type="hidden" id="deleteItemId">
+      <input type="hidden" id="deleteItemType">
+
+      <div class="modal-actions">
+        <button type="button" class="btn-admin secondary-btn" id="cancelDeleteBtn">Cancel</button>
+        <button type="button" class="btn-admin danger-btn" id="confirmDeleteBtn">Delete Permanently</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+
+</body>
+</html>
